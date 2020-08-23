@@ -5,8 +5,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import CustomUser
 from .serializers import CustomUserSerializer
+from rest_framework import permissions
+from .permissions import OwnProfile
 
 class CustomUserList(APIView):
+    permission_classes = [permissions.IsAdminUser]
     def get(self, request):
         users = CustomUser.objects.all()
         serializer = CustomUserSerializer(users, many=True)
@@ -19,6 +22,7 @@ class CustomUserList(APIView):
         return Response(serializer.errors)
 
 class CustomUserDetail(APIView):
+    permission_classes = [OwnProfile]
     def get_object(self, pk):
         try:
             return CustomUser.objects.get(pk=pk)
@@ -28,3 +32,26 @@ class CustomUserDetail(APIView):
         user = self.get_object(pk)
         serializer = CustomUserSerializer(user)
         return Response(serializer.data)
+
+    def put(self, request, pk):
+        user = self.get_object(pk)
+        data = request.data
+        serializer = CustomUserDetailSerializer(
+            instance=user,
+            data=data,
+            partial=True
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    def delete(self, request, pk):
+        user = self.get_object(pk)
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
