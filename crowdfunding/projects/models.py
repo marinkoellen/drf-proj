@@ -43,3 +43,4 @@ class Pledge(models.Model):
     )
 
     date_pledged = models.DateTimeField(auto_now_add=True)
+
