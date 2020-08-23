@@ -8,6 +8,7 @@ from rest_framework import status,permissions
 from .permissions import IsOwnerOrReadOnly,IsSupporterOrReadOnly
 # Create your views here.
 
+
 class ProjectList(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     def get(self, request):

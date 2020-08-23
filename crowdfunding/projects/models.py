@@ -2,6 +2,10 @@ from django.db import models
 from django.db import models
 from datetime import datetime, timedelta
 from django.contrib.auth import get_user_model
+from model_utils import Choices
+
+project_cat = Choices('Food Truck', 'Restaurant','Kitchen Gadgets',"Food Products","Pop up Events","Food Tech Apps", "Recipe Books")
+
 
 # Create your models here.
 def get_closing_date():
@@ -24,7 +28,7 @@ class Project(models.Model):
 
     city = models.CharField(max_length=200)
     location = models.CharField(max_length=200)
-
+    project_category = models.CharField(choices=project_cat, default=project_cat.Restaurant, max_length=50)
 
 
 class Pledge(models.Model):

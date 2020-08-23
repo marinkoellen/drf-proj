@@ -14,6 +14,7 @@ class ProjectSerializer(serializers.Serializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     city = serializers.CharField(max_length=200)
     location = serializers.CharField(max_length=200)
+    project_category = serializers.CharField(max_length=200)
 
     def create(self, validated_data):
         return Project.objects.create(**validated_data)
@@ -40,6 +41,8 @@ class ProjectDetailSerializer(ProjectSerializer):
         instance.dream_goal = validated_data.get('dream_goal', instance.goal)
         instance.image = validated_data.get('image', instance.image)
         instance.is_open = validated_data.get('is_open',instance.is_open)
+        instance.project_category = validated_data.get('project_category',instance.project_category)
+
         instance.save()
         return instance
 
