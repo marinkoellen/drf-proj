@@ -1,5 +1,14 @@
 from rest_framework import serializers
-from .models import Project, Pledge
+from .models import Project, Pledge, Category
+
+
+class CategorySerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=250)
+    
+    def create(self, validated_data):
+        return Category.objects.create(**validated_data)
+
+ 
 
 class ProjectSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
@@ -15,6 +24,11 @@ class ProjectSerializer(serializers.Serializer):
     city = serializers.CharField(max_length=200)
     location = serializers.CharField(max_length=200)
     project_category = serializers.CharField(max_length=200)
+    proj_cat = serializers.SlugRelatedField(
+        queryset= Category.objects.all(),
+        read_only=False,
+        slug_field='name'
+     )
 
     def create(self, validated_data):
         return Project.objects.create(**validated_data)
@@ -42,6 +56,7 @@ class ProjectDetailSerializer(ProjectSerializer):
         instance.image = validated_data.get('image', instance.image)
         instance.is_open = validated_data.get('is_open',instance.is_open)
         instance.project_category = validated_data.get('project_category',instance.project_category)
+        instance.proj_cat = validated_data.get('proj_cat',instance.proj_cat)
 
         instance.save()
         return instance
