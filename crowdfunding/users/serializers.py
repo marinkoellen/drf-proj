@@ -13,13 +13,10 @@ class CustomUserSerializer(serializers.Serializer):
     birthday = serializers.DateTimeField()
     display_picture = serializers.URLField()
     project_preferences = serializers.CharField(max_length=200)
-    password = serializers.CharField(write_only=True)
+
 
     def create(self, validated_data):
-        new_user = CustomUser.objects.create(**validated_data)
-        new_user.set_password(validated_data['password'])
-        new_user.save()
-        return new_user
+        return CustomUser.objects.create(**validated_data)
 
 
 class CustomUserDetailSerializer(CustomUserSerializer):
@@ -31,7 +28,7 @@ class CustomUserDetailSerializer(CustomUserSerializer):
         instance.email = validated_data.get('email', instance.email)
         instance.display_picture = validated_data.get('display_picture', instance.display_picture)
         instance.project_preferences = validated_data.get('project_preferences', instance.project_preferences)
-        instance.password = validated_data.get('password', instance.password)
+
         instance.save()
         return instance
 
