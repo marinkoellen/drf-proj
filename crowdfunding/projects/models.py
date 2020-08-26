@@ -32,7 +32,12 @@ class Project(models.Model):
     city = models.CharField(max_length=200)
     location = models.CharField(max_length=200)
     proj_cat = models.ForeignKey(Category, blank=True, null=True, on_delete=models.CASCADE, related_name='category')
-
+    def total_pledges(self):
+        pledges = Pledge.objects.filter(project = self.id)
+        pledge_total = 0
+        for pledge in pledges:
+            pledge_total = pledge_total + pledge.amount 
+        return pledge_total
 
 
 class Pledge(models.Model):

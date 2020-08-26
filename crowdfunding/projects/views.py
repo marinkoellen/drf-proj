@@ -9,12 +9,15 @@ from .permissions import IsOwnerOrReadOnly,IsSupporterOrReadOnly
 # Create your views here.
 
 class CategoryList(APIView):
-    permission_classes = [permissions.IsAdminUser]
     def get(self, request):
         categories = Category.objects.all()
         serializer = CategorySerializer(categories, many=True)
         return Response(serializer.data)
 
+
+
+class CategoryEditList(CategoryList):
+    permission_classes = [permissions.IsAdminUser]
     def post(self, request):
         serializer = CategorySerializer(data=request.data)
         if serializer.is_valid():
@@ -27,6 +30,10 @@ class CategoryList(APIView):
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
             )
+
+
+
+
 
 class ProjectList(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -149,3 +156,4 @@ class PledgeDetail(APIView):
 class CategoryProject(generics.RetrieveAPIView):
     queryset = Category.objects.all()
     serializer_class = CategoryProjectSerializer
+    lookup_field = 'name'
