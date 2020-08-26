@@ -8,8 +8,12 @@ from .serializers import CustomUserSerializer
 from rest_framework import permissions
 from .permissions import OwnProfile
 
+
+
+
+
+
 class CustomUserList(APIView):
-    permission_classes = [permissions.IsAdminUser]
     def get(self, request):
         users = CustomUser.objects.all()
         serializer = CustomUserSerializer(users, many=True)
@@ -18,8 +22,8 @@ class CustomUserList(APIView):
         serializer = CustomUserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors)
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
 class CustomUserDetail(APIView):
     permission_classes = [OwnProfile]

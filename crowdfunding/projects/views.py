@@ -2,9 +2,9 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Project,Pledge,Category
-from .serializers import ProjectSerializer,PledgeSerializer,ProjectDetailSerializer,PledgeDetailSerializer,CategorySerializer
+from .serializers import ProjectSerializer,PledgeSerializer,ProjectDetailSerializer,PledgeDetailSerializer,CategorySerializer,CategoryProjectSerializer
 from django.http import Http404
-from rest_framework import status,permissions
+from rest_framework import status,permissions, generics
 from .permissions import IsOwnerOrReadOnly,IsSupporterOrReadOnly
 # Create your views here.
 
@@ -145,3 +145,7 @@ class PledgeDetail(APIView):
         pledges.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
+class CategoryProject(generics.RetrieveAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategoryProjectSerializer
