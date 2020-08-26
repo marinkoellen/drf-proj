@@ -2,16 +2,6 @@ from rest_framework import serializers
 from .models import Project, Pledge, Category
 
 
-#whenever a new pledge - update a total number 
-#custom method on the projec tthat would return attribute method
-#field
-#
-
-#
-#is open vs is active tag. 
-#def get_total_value.
- # query to find all pledges - calculate the total. 
-
 
 
 class CategorySerializer(serializers.Serializer):
@@ -73,16 +63,14 @@ class ProjectDetailSerializer(ProjectSerializer):
         return instance
 
 class PledgeDetailSerializer(PledgeSerializer):
-
     def update(self, instance, validated_data):
         instance.comment = validated_data.get('comment',instance.comment)
         instance.anonymous = validated_data.get('anonymous', instance.anonymous)
         instance.save()
         return instance
 
-
 class CategoryProjectSerializer(CategorySerializer):
-    category = ProjectSerializer(many=True, read_only=True)
+    project_categories = ProjectSerializer(many=True, read_only=True)
     
 
     
