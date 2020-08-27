@@ -2,8 +2,6 @@ from rest_framework import serializers
 from .models import Project, Pledge, Category
 
 
-
-
 class CategorySerializer(serializers.Serializer):
     name = serializers.CharField(max_length=250)
     lookup_field = 'name'
@@ -30,7 +28,7 @@ class ProjectSerializer(serializers.Serializer):
         read_only=False,
         slug_field='name'
      )
-    total_pledges = serializers.IntegerField()
+    total_pledges = serializers.ReadOnlyField()
 
     def create(self, validated_data):
         return Project.objects.create(**validated_data)

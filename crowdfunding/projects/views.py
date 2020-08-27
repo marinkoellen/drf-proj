@@ -58,7 +58,7 @@ class ProjectList(APIView):
 
 
 class ProjectDetail(APIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly,IsOwnerOrReadOnly]
+    permission_classes = [IsOwnerOrReadOnly, permissions.IsAuthenticatedOrReadOnly]
 
     def get_object(self, pk):
         try:
@@ -73,6 +73,7 @@ class ProjectDetail(APIView):
     
     def put(self, request, pk):
         project = self.get_object(pk)
+        self.check_object_permissions(request, project)
         data = request.data
         serializer = ProjectDetailSerializer(
             instance=project,
@@ -91,6 +92,7 @@ class ProjectDetail(APIView):
         )
     def delete(self, request, pk):
         project = self.get_object(pk)
+        self.check_object_permissions(request, project)
         project.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -130,6 +132,7 @@ class PledgeDetail(APIView):
 
     def put(self, request, pk):
             pledges = self.get_object(pk)
+            self.check_object_permissions(request, pledges)
             data = request.data
             serializer = PledgeDetailSerializer(
                 instance=pledges,
@@ -149,6 +152,7 @@ class PledgeDetail(APIView):
 
     def delete(self, request, pk):
         pledges = self.get_object(pk)
+        self.check_object_permissions(request, pledges)
         pledges.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
