@@ -17,7 +17,7 @@ class ProjectSerializer(serializers.Serializer):
     goal = serializers.IntegerField()
     dream_goal = serializers.IntegerField()
     campaign_end_date = serializers.DateTimeField()
-    image = serializers.URLField()
+    image = serializers.ImageField()
     is_open = serializers.BooleanField()
     date_created = serializers.ReadOnlyField()
     owner = serializers.ReadOnlyField(source='owner.username')
@@ -70,5 +70,3 @@ class CategoryProjectSerializer(CategorySerializer):
     project_categories = ProjectSerializer(many=True, read_only=True)
     
 
-    
-        

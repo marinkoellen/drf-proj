@@ -2,7 +2,7 @@ from django.db import models
 from datetime import datetime, timedelta
 from django.contrib.auth import get_user_model
 from model_utils import Choices
-
+from django.utils.timezone import timezone, timedelta
 
 class Category(models.Model):
     name = models.CharField(max_length=250,unique=True)
@@ -10,9 +10,14 @@ class Category(models.Model):
         return self.name
 
 
+
 # Create your models here.
 def get_closing_date():
     return datetime.today() + timedelta(days=60)
+
+
+def upload_path(instance, filename):
+    return '/'.join(['projectimages'], str(instance.title),filename)
 
 class Project(models.Model):
     title = models.CharField(max_length=200)
@@ -20,7 +25,7 @@ class Project(models.Model):
     goal = models.IntegerField()
     dream_goal = models.IntegerField()
     campaign_end_date = models.DateTimeField(default=get_closing_date)
-    image = models.URLField()
+    image = models.ImageField(blank=True,null=True,upload_to=upload_path)
     is_open = models.BooleanField()
     date_created = models.DateTimeField(auto_now_add=True)
     owner = models.ForeignKey(
@@ -31,7 +36,8 @@ class Project(models.Model):
 
     city = models.CharField(max_length=200)
     location = models.CharField(max_length=200)
-    proj_cat = models.ForeignKey(Category, blank=True, null=True, on_delete=models.CASCADE, related_name='project_categories')
+    proj_cat = models.ForeignKey(Category, blank=True, null=True, on_delete=models.CASCADE, related_name='project_categories') 
+    
     def total_pledges(self):
         pledges = Pledge.objects.filter(project = self.id)
         pledge_total = 0

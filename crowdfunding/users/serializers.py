@@ -7,8 +7,7 @@ class CustomUserSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
     username = serializers.CharField(max_length=200)
     email = serializers.CharField(max_length=200)
-    first_name = serializers.CharField(max_length=200)
-    last_name = serializers.CharField(max_length=200)
+    preferred_name = serializers.CharField(max_length=200)
     city = serializers.CharField(max_length=200)
     location = serializers.CharField(max_length=200)
     date_joined = serializers.ReadOnlyField()
@@ -28,8 +27,7 @@ class CustomUserDetailSerializer(CustomUserSerializer):
     supporter_pledges = PledgeSerializer(many=True, read_only=True)
     
     def update(self, instance, validated_data):
-        instance.first_name = validated_data.get('first_name', instance.first_name)
-        instance.last_name = validated_data.get('description',instance.last_name)
+        instance.preferred_name = validated_data.get('preferred_name',instance.preferred_name)
         instance.city = validated_data.get('city', instance.city)
         instance.location = validated_data.get('location', instance.location)
         instance.email = validated_data.get('email', instance.email)

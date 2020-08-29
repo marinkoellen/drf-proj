@@ -8,6 +8,8 @@ from rest_framework import status,permissions, generics
 from .permissions import IsOwnerOrReadOnly,IsSupporterOrReadOnly
 from django.contrib.auth import get_user_model
 
+#PERFORM CREATE
+
 User = get_user_model()
 
 # Create your views here.
@@ -17,7 +19,6 @@ class CategoryList(APIView):
         categories = Category.objects.all()
         serializer = CategorySerializer(categories, many=True)
         return Response(serializer.data)
-
 
 
 class CategoryEditList(CategoryList):
@@ -34,8 +35,6 @@ class CategoryEditList(CategoryList):
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
             )
-
-
 
 
 
@@ -165,5 +164,4 @@ class CategoryProject(generics.RetrieveAPIView):
     queryset = Category.objects.all()
     serializer_class = CategoryProjectSerializer
     lookup_field = 'name'
-
 
