@@ -10,7 +10,6 @@ class Category(models.Model):
         return self.name
 
 
-
 # Create your models here.
 def get_closing_date():
     return datetime.today() + timedelta(days=60)
@@ -53,7 +52,6 @@ class Project(models.Model):
         models.Model.save(self,*args,**kwargs)
 
             
-
 
 
 class Pledge(models.Model):

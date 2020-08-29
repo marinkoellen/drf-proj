@@ -12,7 +12,7 @@ class CustomUserSerializer(serializers.Serializer):
     location = serializers.CharField(max_length=200)
     date_joined = serializers.ReadOnlyField()
     birthday = serializers.DateTimeField()
-    display_picture = serializers.URLField()
+    display_picture = serializers.ImageField()
     password = serializers.CharField(write_only=True)
 
     def create(self, validated_data):
@@ -22,10 +22,7 @@ class CustomUserSerializer(serializers.Serializer):
         return new_user
         
 
-class CustomUserDetailSerializer(CustomUserSerializer):
-    owner_projects = ProjectSerializer(many=True, read_only=True)
-    supporter_pledges = PledgeSerializer(many=True, read_only=True)
-    
+class CustomUserDetailSerializer(CustomUserSerializer):    
     def update(self, instance, validated_data):
         instance.preferred_name = validated_data.get('preferred_name',instance.preferred_name)
         instance.city = validated_data.get('city', instance.city)
@@ -37,3 +34,7 @@ class CustomUserDetailSerializer(CustomUserSerializer):
         instance.save()
         return instance
 
+
+class CustomUserActivitySerializer(CustomUserSerializer):
+    owner_projects = ProjectSerializer(many=True, read_only=True)
+    supporter_pledges = PledgeSerializer(many=True, read_only=True)

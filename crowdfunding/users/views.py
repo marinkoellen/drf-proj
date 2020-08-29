@@ -3,7 +3,7 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import CustomUser
-from .serializers import CustomUserSerializer,CustomUserDetailSerializer
+from .serializers import CustomUserSerializer,CustomUserDetailSerializer,CustomUserActivitySerializer
 from rest_framework import permissions, status
 from .permissions import OwnProfile
 
@@ -60,3 +60,15 @@ class CustomUserDetail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class CustomUserActivityDetail(APIView):
+    permission_classes = [OwnProfile]
+    def get_object(self, pk):
+        try:
+            return CustomUser.objects.get(pk=pk)
+        except CustomUser.DoesNotExist:
+            raise Http404
+    def get(self, request, pk):
+        user = self.get_object(pk)
+        self.check_object_permissions(request, user)
+        serializer = CustomUserActivitySerializer(user)
+        return Response(serializer.data)
