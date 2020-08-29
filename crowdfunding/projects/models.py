@@ -38,6 +38,16 @@ class Project(models.Model):
         for pledge in pledges:
             pledge_total = pledge_total + pledge.amount 
         return pledge_total
+    
+  
+    def save(self,*args,**kwargs):
+        if self.total_pledges() >= self.dream_goal:
+            self.is_open = False
+            self.campaign_end_date = datetime.today()
+        models.Model.save(self,*args,**kwargs)
+
+            
+
 
 
 class Pledge(models.Model):

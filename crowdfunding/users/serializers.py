@@ -1,18 +1,6 @@
 from rest_framework import serializers
 from .models import CustomUser
-
-class PledgeSerializer(serializers.Serializer):
-    id = serializers.ReadOnlyField()
-    amount = serializers.IntegerField()
-    comment = serializers.CharField(max_length=200)
-    anonymous = serializers.BooleanField()
-    supporter = serializers.ReadOnlyField(source='supporter.username')
-    project_id = serializers.IntegerField()
-    date_pledged = serializers.ReadOnlyField()
-
-    def create(self, validated_data):
-        return Pledge.objects.create(**validated_data)
-
+from projects.serializers import PledgeSerializer,ProjectSerializer
 
 
 class CustomUserSerializer(serializers.Serializer):
@@ -36,8 +24,9 @@ class CustomUserSerializer(serializers.Serializer):
         
 
 class CustomUserDetailSerializer(CustomUserSerializer):
-    pledges = PledgeSerializer(many=True, read_only=True)
-
+    owner_projects = ProjectSerializer(many=True, read_only=True)
+    supporter_pledges = PledgeSerializer(many=True, read_only=True)
+    
     def update(self, instance, validated_data):
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('description',instance.last_name)

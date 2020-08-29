@@ -56,7 +56,6 @@ class ProjectDetailSerializer(ProjectSerializer):
         instance.image = validated_data.get('image', instance.image)
         instance.is_open = validated_data.get('is_open',instance.is_open)
         instance.proj_cat = validated_data.get('proj_cat',instance.proj_cat)
-
         instance.save()
         return instance
 
