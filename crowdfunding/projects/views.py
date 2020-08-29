@@ -6,6 +6,10 @@ from .serializers import ProjectSerializer,PledgeSerializer,ProjectDetailSeriali
 from django.http import Http404
 from rest_framework import status,permissions, generics
 from .permissions import IsOwnerOrReadOnly,IsSupporterOrReadOnly
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
 # Create your views here.
 
 class CategoryList(APIView):
@@ -161,3 +165,5 @@ class CategoryProject(generics.RetrieveAPIView):
     queryset = Category.objects.all()
     serializer_class = CategoryProjectSerializer
     lookup_field = 'name'
+
+
