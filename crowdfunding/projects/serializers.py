@@ -17,7 +17,7 @@ class ProjectSerializer(serializers.Serializer):
     goal = serializers.IntegerField()
     dream_goal = serializers.IntegerField()
     campaign_end_date = serializers.DateTimeField()
-    image = serializers.ImageField()
+    image = serializers.URLField()
     is_open = serializers.BooleanField()
     date_created = serializers.ReadOnlyField()
     owner = serializers.ReadOnlyField(source='owner.username')
@@ -32,7 +32,9 @@ class ProjectSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         return Project.objects.create(**validated_data)
-    
+
+
+
 
 class PledgeSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
@@ -45,6 +47,7 @@ class PledgeSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         return Pledge.objects.create(**validated_data)
+
 
 class ProjectDetailSerializer(ProjectSerializer):
     pledges = PledgeSerializer(many=True, read_only=True)

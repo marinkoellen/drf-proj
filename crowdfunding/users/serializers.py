@@ -12,7 +12,7 @@ class CustomUserSerializer(serializers.Serializer):
     location = serializers.CharField(max_length=200)
     date_joined = serializers.ReadOnlyField()
     birthday = serializers.DateTimeField()
-    display_picture = serializers.ImageField()
+    display_picture = serializers.URLField()
     password = serializers.CharField(write_only=True)
 
     def create(self, validated_data):

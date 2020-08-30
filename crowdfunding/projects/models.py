@@ -15,8 +15,6 @@ def get_closing_date():
     return datetime.today() + timedelta(days=60)
 
 
-def upload_path(instance, filename):
-    return '/'.join(['projectimages'], str(instance.title),filename)
 
 class Project(models.Model):
     title = models.CharField(max_length=200)
@@ -24,7 +22,7 @@ class Project(models.Model):
     goal = models.IntegerField()
     dream_goal = models.IntegerField()
     campaign_end_date = models.DateTimeField(default=get_closing_date)
-    image = models.ImageField(blank=True,null=True,upload_to=upload_path)
+    image = models.URLField(blank=True,null=True)
     is_open = models.BooleanField()
     date_created = models.DateTimeField(auto_now_add=True)
     owner = models.ForeignKey(
@@ -51,7 +49,6 @@ class Project(models.Model):
             self.campaign_end_date = datetime.today()
         models.Model.save(self,*args,**kwargs)
 
-            
 
 
 class Pledge(models.Model):

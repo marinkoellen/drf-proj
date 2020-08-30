@@ -60,6 +60,8 @@ class ProjectList(APIView):
 
 
 
+
+
 class ProjectDetail(APIView):
     permission_classes = [IsOwnerOrReadOnly, permissions.IsAuthenticatedOrReadOnly]
 

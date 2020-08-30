@@ -72,3 +72,16 @@ class CustomUserActivityDetail(APIView):
         self.check_object_permissions(request, user)
         serializer = CustomUserActivitySerializer(user)
         return Response(serializer.data)
+
+    
+# class CustomUserPublicDetail(APIView):
+#     def get_object(self, pk):
+#         try:
+#             return CustomUser.objects.get(pk=pk)
+#         except CustomUser.DoesNotExist:
+#             raise Http404
+#     def get(self, request, pk):
+#         user = self.get_object(pk)
+#         self.check_object_permissions(request, user)
+#         serializer = CustomUserActivitySerializer(user)
+#         return Response(serializer.data)
