@@ -1,12 +1,14 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Project,Pledge,Category
-from .serializers import ProjectSerializer,PledgeSerializer,ProjectDetailSerializer,PledgeDetailSerializer,CategorySerializer,CategoryProjectSerializer
+from .models import Project,Pledge,Category, Like
+from .serializers import ProjectSerializer,PledgeSerializer,ProjectDetailSerializer,PledgeDetailSerializer,CategorySerializer,CategoryProjectSerializer, LikeSerializer
 from django.http import Http404
-from rest_framework import status,permissions, generics
+from rest_framework import status,permissions, generics, filters
 from .permissions import IsOwnerOrReadOnly,IsSupporterOrReadOnly
 from django.contrib.auth import get_user_model
+from django.db.models import Prefetch
+from rest_framework import viewsets
 
 #PERFORM CREATE
 
@@ -40,10 +42,6 @@ class CategoryEditList(CategoryList):
 
 class ProjectList(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    def get(self, request):
-        projects = Project.objects.all()
-        serializer = ProjectSerializer(projects, many=True)
-        return Response(serializer.data)
 
     def post(self, request):
         serializer = ProjectSerializer(data=request.data)
@@ -59,7 +57,11 @@ class ProjectList(APIView):
             )
 
 
-
+class ProjectOrderList(generics.ListAPIView):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ['campaign_end_date', 'owner','proj_cat','date_created']
 
 
 class ProjectDetail(APIView):
@@ -166,4 +168,25 @@ class CategoryProject(generics.RetrieveAPIView):
     queryset = Category.objects.all()
     serializer_class = CategoryProjectSerializer
     lookup_field = 'name'
+
+
+
+class LikeList(APIView):
+    def get(self, request):
+        likes = Like.objects.all()
+        serializer = LikeSerializer(likes, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request):
+        serializer = LikeSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(liker=request.user)
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )    
 

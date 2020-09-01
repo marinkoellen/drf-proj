@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from model_utils import Choices
 
-
 class CustomUser(AbstractUser):
     preferred_name = models.CharField(max_length=200)
     city = models.CharField(max_length=200)
@@ -16,4 +15,4 @@ class CustomUser(AbstractUser):
 
 
 
-# class PublicProfile(models.Model):
+

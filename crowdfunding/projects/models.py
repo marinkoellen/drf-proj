@@ -14,7 +14,18 @@ class Category(models.Model):
 def get_closing_date():
     return datetime.today() + timedelta(days=60)
 
+class Like(models.Model):
+    liker = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.CASCADE,
+        related_name='liker'
+    )
 
+    project = models.ForeignKey(
+        'Project',
+        on_delete=models.CASCADE,
+        related_name='user_likes'
+    )
 
 class Project(models.Model):
     title = models.CharField(max_length=200)
@@ -34,20 +45,29 @@ class Project(models.Model):
     city = models.CharField(max_length=200)
     location = models.CharField(max_length=200)
     proj_cat = models.ForeignKey(Category, blank=True, null=True, on_delete=models.CASCADE, related_name='project_categories') 
-    
+
+    @property
     def total_pledges(self):
         pledges = Pledge.objects.filter(project = self.id)
         pledge_total = 0
         for pledge in pledges:
             pledge_total = pledge_total + pledge.amount 
         return pledge_total
+    @property
+    def total_likes(self):
+        # likes = Like.objects.filter(project = self.id).distinct('liker')
+        likes = Like.objects.filter(project = self.id)
+        like_total = 0
+        for like_i in likes:
+            like_total = like_total + 1
+        return like_total
     
   
-    def save(self,*args,**kwargs):
-        if self.total_pledges() >= self.dream_goal:
-            self.is_open = False
-            self.campaign_end_date = datetime.today()
-        models.Model.save(self,*args,**kwargs)
+    # def save(self,*args,**kwargs):
+    #     if self.total_pledges() >= self.dream_goal:
+    #         self.is_open = False
+    #         self.campaign_end_date = datetime.today()
+    #     models.Model.save(self,*args,**kwargs)
 
 
 
@@ -67,4 +87,5 @@ class Pledge(models.Model):
     )
 
     date_pledged = models.DateTimeField(auto_now_add=True)
+
 

@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Project, Pledge, Category
+from .models import Project, Pledge, Category, Like
+from django.utils.timezone import now
 
 
 class CategorySerializer(serializers.Serializer):
@@ -29,10 +30,39 @@ class ProjectSerializer(serializers.Serializer):
         slug_field='name'
      )
     total_pledges = serializers.ReadOnlyField()
+    dream_goal_met = serializers.SerializerMethodField()
+    total_likes = serializers.ReadOnlyField()
+    project_close = serializers.SerializerMethodField()
+    goal_met = serializers.SerializerMethodField()
 
+    class Meta:
+        model = Project
+
+    def get_goal_met(self, obj):
+        if obj.total_pledges > obj.goal:
+            return True
+        else:
+            return False    
+    
+    def get_dream_goal_met(self, obj):
+        if obj.total_pledges > obj.dream_goal:
+            return True
+        else:
+            return False
+
+    def get_project_close(self, obj):
+        print(now())
+        print(obj.campaign_end_date)
+        print(now() > obj.campaign_end_date)
+        if now() > obj.campaign_end_date:
+            return True
+        elif obj.is_open == False:
+            return True
+        else:
+            return False
+    
     def create(self, validated_data):
         return Project.objects.create(**validated_data)
-
 
 
 
@@ -41,7 +71,7 @@ class PledgeSerializer(serializers.Serializer):
     amount = serializers.IntegerField()
     comment = serializers.CharField(max_length=200)
     anonymous = serializers.BooleanField()
-    supporter = serializers.ReadOnlyField(source='supporter.username')
+    supporter = serializers.ReadOnlyField(source='liker.username')
     project_id = serializers.IntegerField()
     date_pledged = serializers.ReadOnlyField()
 
@@ -72,4 +102,14 @@ class PledgeDetailSerializer(PledgeSerializer):
 class CategoryProjectSerializer(CategorySerializer):
     project_categories = ProjectSerializer(many=True, read_only=True)
     
+
+
+
+class LikeSerializer(serializers.Serializer):
+    id = serializers.ReadOnlyField()
+    liker = serializers.ReadOnlyField(source='liker.username')
+    project_id = serializers.IntegerField()
+
+    def create(self, validated_data):
+        return Like.objects.create(**validated_data)
 

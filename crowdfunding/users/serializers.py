@@ -22,7 +22,7 @@ class CustomUserSerializer(serializers.Serializer):
         return new_user
         
 
-class CustomUserDetailSerializer(CustomUserSerializer):    
+class CustomUserDetailSerializer(CustomUserSerializer):
     def update(self, instance, validated_data):
         instance.preferred_name = validated_data.get('preferred_name',instance.preferred_name)
         instance.city = validated_data.get('city', instance.city)
@@ -38,3 +38,10 @@ class CustomUserDetailSerializer(CustomUserSerializer):
 class CustomUserActivitySerializer(CustomUserSerializer):
     owner_projects = ProjectSerializer(many=True, read_only=True)
     supporter_pledges = PledgeSerializer(many=True, read_only=True)
+    count_pledged = serializers.SerializerMethodField()
+    count_projects = serializers.SerializerMethodField()
+    def get_count_pledged(self, obj):
+        return obj.supporter_pledges.count()
+    
+    def get_count_projects(self, obj):
+        return obj.owner_projects.count()
