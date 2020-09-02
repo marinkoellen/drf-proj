@@ -1,7 +1,6 @@
 from django.db import models
 from datetime import datetime, timedelta
 from django.contrib.auth import get_user_model
-from model_utils import Choices
 from django.utils.timezone import timezone, timedelta
 
 class Category(models.Model):
