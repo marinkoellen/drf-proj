@@ -11,7 +11,6 @@ class CustomUserSerializer(serializers.Serializer):
     city = serializers.CharField(max_length=200)
     location = serializers.CharField(max_length=200)
     date_joined = serializers.ReadOnlyField()
-    birthday = serializers.DateTimeField()
     display_picture = serializers.URLField()
     password = serializers.CharField(write_only=True)
 
@@ -25,12 +24,13 @@ class CustomUserSerializer(serializers.Serializer):
 class CustomUserDetailSerializer(CustomUserSerializer):
     def update(self, instance, validated_data):
         instance.preferred_name = validated_data.get('preferred_name',instance.preferred_name)
+        instance.email = validated_data.get('email', instance.email)
+        instance.password = validated_data.get('password', instance.password)
         instance.city = validated_data.get('city', instance.city)
         instance.location = validated_data.get('location', instance.location)
-        instance.email = validated_data.get('email', instance.email)
         instance.display_picture = validated_data.get('display_picture', instance.display_picture)
-        instance.password = validated_data.get('password', instance.password)
-
+        instance.date_joined = validated_data.get('date_joined', instance.date_joined)
+        instance.last_updated = validated_data.get('last_updated', instance.last_updated)
         instance.save()
         return instance
 
@@ -45,3 +45,30 @@ class CustomUserActivitySerializer(CustomUserSerializer):
     
     def get_count_projects(self, obj):
         return obj.owner_projects.count()
+
+
+
+
+
+# class CustomUserDetailSerializer(CustomUserSerializer):
+#     def update(self, instance, validated_data):
+#         instance.preferred_name = validated_data.get('preferred_name',instance.preferred_name)
+#         instance.email = validated_data.get('email', instance.email)
+#         instance.password = validated_data.get('password', instance.password)
+#         instance.city = validated_data.get('city', instance.city)
+#         instance.location = validated_data.get('location', instance.location)
+#         instance.save()
+#         return instance
+
+
+# class ProfileSerializer(serializers.ModelSerializer):
+#     def update(self, instance, validated_data):
+#         instance.display_picture = validated_data.get('display_picture', instance.display_picture)
+#         instance.date_joined = validated_data.get('date_joined', instance.date_joined)
+#         instance.last_updated = validated_data.get('last_updated', instance.last_updated)
+#         instance.save()
+#         return instance
+
+#     class Meta:
+#         model = PublicProfile
+#         fields = "__all__"

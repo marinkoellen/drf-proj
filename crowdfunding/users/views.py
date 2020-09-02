@@ -73,15 +73,18 @@ class CustomUserActivityDetail(APIView):
         serializer = CustomUserActivitySerializer(user)
         return Response(serializer.data)
 
-    
-# class CustomUserPublicDetail(APIView):
+
+
+# class PublicProfileAPI(APIView):
 #     def get_object(self, pk):
 #         try:
-#             return CustomUser.objects.get(pk=pk)
-#         except CustomUser.DoesNotExist:
+#             return PublicProfile.objects.get(pk=pk)
+#         except PublicProfile.DoesNotExist:
 #             raise Http404
 #     def get(self, request, pk):
 #         user = self.get_object(pk)
 #         self.check_object_permissions(request, user)
-#         serializer = CustomUserActivitySerializer(user)
+#         serializer = PublicProfileSerializer(user)
 #         return Response(serializer.data)
+
+# user = get_object_or_404(CustomUser, pk=kwargs['user_id'])
