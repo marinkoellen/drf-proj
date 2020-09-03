@@ -3,7 +3,7 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import CustomUser
-from .serializers import CustomUserSerializer,CustomUserDetailSerializer,CustomUserActivitySerializer
+from .serializers import CustomUserSerializer,ProfileSerializer,CustomUserActivitySerializer
 from rest_framework import permissions, status
 from .permissions import OwnProfile
 
@@ -21,6 +21,7 @@ class CustomUserList(APIView):
             return Response(serializer.data,status=status.HTTP_201_CREATED)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
+
 class CustomUserDetail(APIView):
     permission_classes = [OwnProfile, permissions.IsAuthenticatedOrReadOnly]
     def get_object(self, pk):
@@ -31,14 +32,24 @@ class CustomUserDetail(APIView):
     def get(self, request, pk):
         user = self.get_object(pk)
         self.check_object_permissions(request, user)
-        serializer = CustomUserDetailSerializer(user)
+        serializer = CustomUserSerializer(user)
         return Response(serializer.data)
+
+
+
+class CustomUserEdit(APIView):
+    permission_classes = [OwnProfile]
+    def get_object(self, pk):
+        try:
+            return CustomUser.objects.get(pk=pk)
+        except CustomUser.DoesNotExist:
+            raise Http404
 
     def put(self, request, pk):
         user = self.get_object(pk)
         self.check_object_permissions(request, user)
         data = request.data
-        serializer = CustomUserDetailSerializer(
+        serializer = CustomUserSerializer(
             instance=user,
             data=data,
             partial=True
@@ -75,16 +86,3 @@ class CustomUserActivityDetail(APIView):
 
 
 
-# class PublicProfileAPI(APIView):
-#     def get_object(self, pk):
-#         try:
-#             return PublicProfile.objects.get(pk=pk)
-#         except PublicProfile.DoesNotExist:
-#             raise Http404
-#     def get(self, request, pk):
-#         user = self.get_object(pk)
-#         self.check_object_permissions(request, user)
-#         serializer = PublicProfileSerializer(user)
-#         return Response(serializer.data)
-
-# user = get_object_or_404(CustomUser, pk=kwargs['user_id'])
