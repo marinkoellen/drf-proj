@@ -140,3 +140,8 @@ class CustomUserActivitySerializer(CustomUserSerializer):
     
     def get_count_projects(self, obj):
         return obj.owner_projects.count()
+
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'owner_projects', 'supporter_pledges', 'count_pledged','count_projects']
+
