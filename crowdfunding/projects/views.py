@@ -2,29 +2,27 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Project,Pledge,Category, Like
-from .serializers import ProjectSerializer,PledgeSerializer,ProjectDetailSerializer,PledgeDetailSerializer,CategorySerializer,CategoryProjectSerializer, LikeSerializer
+from .serializers import ProjectSerializer,PledgeSerializer,ProjectDetailSerializer,PledgeDetailSerializer,CategorySerializer,CategoryProjectSerializer, LikeSerializer,CategoryDetailSerializer
 from django.http import Http404
 from rest_framework import status,permissions, generics, filters
-from .permissions import IsOwnerOrReadOnly,IsSupporterOrReadOnly
+from .permissions import IsOwnerOrReadOnly,IsSupporterOrReadOnly,IsAdminUserOrReadOnly
 from django.contrib.auth import get_user_model
 from django.db.models import Prefetch
 from rest_framework import viewsets
 
 #PERFORM CREATE
 
+
 User = get_user_model()
 
 # Create your views here.
-
 class CategoryList(APIView):
+    permission_classes = [IsAdminUserOrReadOnly]
     def get(self, request):
         categories = Category.objects.all()
         serializer = CategorySerializer(categories, many=True)
         return Response(serializer.data)
-
-
-class CategoryEditList(CategoryList):
-    permission_classes = [permissions.IsAdminUser]
+    
     def post(self, request):
         serializer = CategorySerializer(data=request.data)
         if serializer.is_valid():
@@ -37,6 +35,49 @@ class CategoryEditList(CategoryList):
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
             )
+
+
+class CategoryDetail(APIView):
+    permission_classes = [permissions.IsAdminUser]    
+
+    def get_object(self,pk):
+        try:
+            return Category.objects.get(pk=pk)
+        except Category.DoesNotExist:
+            raise Http404
+
+    def get(self,request,pk):
+        categories = self.get_object(pk)
+        serializer = CategorySerializer(categories)
+        return Response(serializer.data) 
+
+    def put(self, request, pk):
+            categories = self.get_object(pk)
+            self.check_object_permissions(request, categories)
+            data = request.data
+            serializer = CategoryDetailSerializer(
+                instance=categories,
+                data=data,
+                partial=True
+            )
+            if serializer.is_valid():
+                serializer.save()
+                return Response(
+                    serializer.data,
+                    status=status.HTTP_201_CREATED
+                )
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+    def delete(self, request, pk):
+        categories = self.get_object(pk)
+        self.check_object_permissions(request, categories)
+        categories.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 
 
 

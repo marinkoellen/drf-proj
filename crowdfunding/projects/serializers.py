@@ -5,11 +5,18 @@ from django.utils.timezone import now
 
 class CategorySerializer(serializers.Serializer):
     name = serializers.CharField(max_length=250)
-    lookup_field = 'name'
 
     def create(self, validated_data):
         return Category.objects.create(**validated_data)
 
+
+
+class CategoryDetailSerializer(CategorySerializer):
+    lookup_field = 'name'
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name',instance.name)
+        instance.save()
+        return instance
 
 class ProjectSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
@@ -102,7 +109,6 @@ class PledgeDetailSerializer(PledgeSerializer):
 class CategoryProjectSerializer(CategorySerializer):
     project_categories = ProjectSerializer(many=True, read_only=True)
     
-
 
 
 class LikeSerializer(serializers.Serializer):

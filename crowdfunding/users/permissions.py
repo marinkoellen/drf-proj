@@ -6,3 +6,4 @@ class OwnProfile(permissions.BasePermission):
             return True
         return obj.username == request.user.username
 
+
