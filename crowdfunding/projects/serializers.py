@@ -24,7 +24,7 @@ class ProjectSerializer(serializers.Serializer):
     description = serializers.CharField(max_length=None)
     goal = serializers.IntegerField()
     dream_goal = serializers.IntegerField()
-    campaign_end_date = serializers.DateTimeField()
+    campaign_end_date = serializers.DateTimeField(input_formats=['%Y-%m-%d',])
     image = serializers.URLField()
     is_open = serializers.BooleanField()
     date_created = serializers.ReadOnlyField()
