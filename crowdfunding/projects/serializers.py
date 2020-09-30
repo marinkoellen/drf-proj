@@ -39,7 +39,6 @@ class ProjectSerializer(serializers.Serializer):
     total_pledges = serializers.ReadOnlyField()
     dream_goal_met = serializers.SerializerMethodField()
     total_likes = serializers.ReadOnlyField()
-    project_close = serializers.SerializerMethodField()
     goal_met = serializers.SerializerMethodField()
 
     class Meta:
@@ -53,17 +52,6 @@ class ProjectSerializer(serializers.Serializer):
     
     def get_dream_goal_met(self, obj):
         if obj.total_pledges > obj.dream_goal:
-            return True
-        else:
-            return False
-
-    def get_project_close(self, obj):
-        print(now())
-        print(obj.campaign_end_date)
-        print(now() > obj.campaign_end_date)
-        if now() > obj.campaign_end_date:
-            return True
-        elif obj.is_open == False:
             return True
         else:
             return False
