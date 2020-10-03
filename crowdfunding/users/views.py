@@ -23,7 +23,7 @@ class CustomUserList(APIView):
 
 
 class CustomUserDetail(APIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly,
+    permission_classes = [permissions.IsAuthenticated,
     OwnProfile]
     def get_object(self, username):
         try:
@@ -64,9 +64,9 @@ class CustomUserDetail(APIView):
 
 
 
-
 class CustomUserActivityDetail(APIView):
-    permission_classes = [OwnProfile]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
     def get_object(self, username):
         try:
             return CustomUser.objects.get(username=username)
